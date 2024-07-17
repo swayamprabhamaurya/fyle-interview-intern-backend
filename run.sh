@@ -7,7 +7,10 @@ set -e
 # find . -type d \( -name env -o -name venv  \) -prune -false -o -name "*.pyc" -exec rm -rf {} \;
 
 # Run required migrations
-export FLASK_APP=core/server.py
+#export FLASK_APP=core/server.py
+set FLASK_APP=core/server.py
+#rm core/store.sqlite3
+flask db upgrade -d core/migrations/
 
 # flask db init -d core/migrations/
 # flask db migrate -m "Initial migration." -d core/migrations/
