@@ -4,6 +4,7 @@ from core.apis.decorators import AuthPrincipal
 from core.libs import helpers, assertions
 from core.models.teachers import Teacher
 from core.models.students import Student
+from core.models.principals import Principal
 from sqlalchemy.types import Enum as BaseEnum
 
 
@@ -23,8 +24,9 @@ class AssignmentStateEnum(str, enum.Enum):
 class Assignment(db.Model):
     __tablename__ = 'assignments'
     id = db.Column(db.Integer, db.Sequence('assignments_id_seq'), primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey(Student.id), nullable=False)
-    teacher_id = db.Column(db.Integer, db.ForeignKey(Teacher.id), nullable=True)
+    student_id = db.Column(db.Integer, db.ForeignKey(Student.id),nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey(Teacher.id),nullable=True)
+    #principal_id = db.Column(db.Integer, db.ForeignKey(Principal.id),nullable=True)
     content = db.Column(db.Text)
     grade = db.Column(BaseEnum(GradeEnum))
     state = db.Column(BaseEnum(AssignmentStateEnum), default=AssignmentStateEnum.DRAFT, nullable=False)
@@ -88,6 +90,14 @@ class Assignment(db.Model):
     def get_assignments_by_student(cls, student_id):
         return cls.filter(cls.student_id == student_id).all()
 
-    @classmethod
+    '''@classmethod
     def get_assignments_by_teacher(cls):
-        return cls.query.all()
+        return cls.query.all()'''
+    @classmethod
+    def get_assignments_by_teacher(cls, teacher_id):
+        return cls.query.filter_by(teacher_id=teacher_id).all()
+
+    
+    @classmethod
+    def get_assignments_by_principal(cls, principal_id):
+        return cls.query.filter_by(cls.principal_id == principal_id).all()
